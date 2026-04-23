@@ -1,2 +1,55 @@
-<!-- app/templates/dashboard.html -->
-<!-- 預留給 dashboard 模板實作 -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>數據總覽</h1>
+    <p class="subtitle">追蹤您的生產力與進度</p>
+</div>
+
+<div class="dashboard-grid">
+    <div class="stat-card glass-panel">
+        <div class="stat-icon primary"><i class="fa-solid fa-list-ul"></i></div>
+        <div class="stat-content">
+            <h3>總任務數</h3>
+            <div class="stat-value">{{ stats.total }}</div>
+        </div>
+    </div>
+    
+    <div class="stat-card glass-panel">
+        <div class="stat-icon success"><i class="fa-solid fa-check-double"></i></div>
+        <div class="stat-content">
+            <h3>已完成</h3>
+            <div class="stat-value">{{ stats.completed }}</div>
+        </div>
+    </div>
+    
+    <div class="stat-card glass-panel">
+        <div class="stat-icon warning"><i class="fa-solid fa-spinner"></i></div>
+        <div class="stat-content">
+            <h3>進行中</h3>
+            <div class="stat-value">{{ stats.active }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="progress-section card glass-panel mt-4">
+    <h2>整體完成度</h2>
+    <div class="progress-container">
+        <div class="progress-bar-wrapper">
+            <div class="progress-fill" style="width: {{ stats.progress }}%;"></div>
+        </div>
+        <div class="progress-text">{{ stats.progress }}%</div>
+    </div>
+    <p class="progress-message">
+        {% if stats.progress == 100 %}
+            太完美了！所有任務都已完成 🎉
+        {% elif stats.progress >= 50 %}
+            做得很棒！已經完成一半以上了 💪
+        {% elif stats.progress > 0 %}
+            好的開始！繼續保持節奏 🚀
+        {% else %}
+            讓我們開始行動吧！✨
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

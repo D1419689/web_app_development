@@ -1,2 +1,68 @@
-<!-- app/templates/index.html -->
-<!-- 預留給 index 模板實作 -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>我的任務</h1>
+    <p class="subtitle">管理您的日常待辦事項</p>
+</div>
+
+<!-- 新增任務表單 -->
+<div class="card create-task-card glass-panel">
+    <form action="{{ url_for('main.create_task') }}" method="POST" class="create-task-form">
+        <div class="input-group">
+            <input type="text" name="title" placeholder="準備做些什麼？" required autocomplete="off" class="task-input">
+        </div>
+        <div class="input-group date-group">
+            <input type="date" name="due_date" class="date-input" title="設定到期日">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> 新增
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- 篩選列 -->
+<div class="filter-bar">
+    <a href="{{ url_for('main.index', status='all') }}" class="filter-tab {% if current_status == 'all' %}active{% endif %}">全部</a>
+    <a href="{{ url_for('main.index', status='active') }}" class="filter-tab {% if current_status == 'active' %}active{% endif %}">進行中</a>
+    <a href="{{ url_for('main.index', status='completed') }}" class="filter-tab {% if current_status == 'completed' %}active{% endif %}">已完成</a>
+</div>
+
+<!-- 任務列表 -->
+<div class="task-list">
+    {% if tasks %}
+        {% for task in tasks %}
+        <div class="task-item card {% if task.is_completed %}completed{% endif %}" data-id="{{ task.id }}">
+            <div class="task-checkbox">
+                <input type="checkbox" id="task-{{ task.id }}" class="custom-checkbox" 
+                       {% if task.is_completed %}checked{% endif %} 
+                       onchange="toggleTask({{ task.id }}, this.checked)">
+                <label for="task-{{ task.id }}"></label>
+            </div>
+            <div class="task-content">
+                <h3 class="task-title">{{ task.title }}</h3>
+                <div class="task-meta">
+                    <span class="created-at">建立於 {{ task.created_at.strftime('%Y-%m-%d') }}</span>
+                    {% if task.due_date %}
+                        <span class="due-date">
+                            <i class="fa-regular fa-clock"></i> 到期日: {{ task.due_date.strftime('%Y-%m-%d') }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="task-actions">
+                <button class="btn-icon delete-btn" onclick="deleteTask({{ task.id }})" title="刪除任務">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+            <h3>目前沒有任務</h3>
+            <p>太棒了！您已經完成了所有事項，或者現在就新增一個新任務吧。</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
