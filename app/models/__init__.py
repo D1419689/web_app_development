@@ -1,2 +1,1 @@
-# app/models/__init__.py
-# Model 初始化檔案
+from .task import Task
